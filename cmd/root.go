@@ -8,7 +8,11 @@ import (
 )
 
 var (
+  locale string
   version bool
+  dayOfWeek bool
+  verbose bool
+  format24 bool
 
   rootCmd = &cobra.Command{
     Use:   "ctap",
@@ -19,8 +23,12 @@ var (
 				cmd.Print(GetVersionDisplay())
 				return nil
 			}
-      cmd.Println(cmd.UsageString())
+      if len(args) < 1 {
+        cmd.Println(cmd.UsageString())
+        return nil
+      }
 
+      cmd.Print(GetParsedExpressionDisplay(args))
       return nil
     },
 }
@@ -34,5 +42,9 @@ func Execute() {
 }
 
 func init() {
-  rootCmd.Flags().BoolVarP(&version, "version", "v", false, "Prints version information")
+	rootCmd.Flags().StringVarP(&locale, "locale", "l", "en", "Prints description in the specified locale")
+  rootCmd.Flags().BoolVarP(&version, "version", "V", false, "Prints version information")
+	rootCmd.Flags().BoolVarP(&dayOfWeek, "dow-starts-at-one", "d", false, "Is day of the week starts at 1 (Monday-Sunday: 1-7)")
+	rootCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Prints description in verbose format")
+	rootCmd.Flags().BoolVar(&format24, "24-hour", false, "Prints description in 24 hour time format")
 }
