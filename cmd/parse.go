@@ -29,10 +29,10 @@ func GetParsedExpressionDisplay(args []string) string {
 
 func getExprDescriptor(loc cron.LocaleType) (exprDesc *cron.ExpressionDescriptor, err error) {
   exprDesc, err = cron.NewDescriptor(
-      cron.Use24HourTimeFormat(format24),
-      cron.DayOfWeekStartsAtOne(dayOfWeek),
-      cron.Verbose(verbose),
-      cron.SetLocales(loc),
+    cron.Use24HourTimeFormat(format24),
+    cron.DayOfWeekStartsAtOne(dayOfWeek),
+    cron.Verbose(verbose),
+    cron.SetLocales(loc),
   )
 
   if err != nil {
