@@ -29,4 +29,3 @@ func AssertResult(t *testing.T, expectedValue interface{}, actualValue interface
     t.Error("Expected <", expectedValue, "> but got <", actualValue, ">", fmt.Sprintf("%T", actualValue))
   }
 }
-
