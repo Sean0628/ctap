@@ -8,12 +8,6 @@ import (
 )
 
 var (
-  locale string
-  version bool
-  dayOfWeek bool
-  verbose bool
-  format24 bool
-
   rootCmd = &cobra.Command{
     Use:   "ctap",
     Short: "CLI crontab parser",
@@ -28,7 +22,6 @@ var (
         return nil
       }
 
-      cmd.Print(GetParsedExpressionDisplay(args))
       return nil
     },
 }
