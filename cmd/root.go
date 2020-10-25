@@ -14,16 +14,24 @@ func New() *cobra.Command {
         cmd.Print(GetVersionDisplay())
         return nil
       }
-      if len(args) < 1 {
-        cmd.Println(cmd.UsageString())
+
+      if len(args) > 0 {
+        cmd.Print(GetParsedExpressionDisplay(args))
         return nil
       }
-      cmd.Print(GetParsedExpressionDisplay(args))
+
+      if len(file) > 0 {
+        cmd.Print(GetParsedExpressionFromFileDisplay(args))
+        return nil
+      }
+
+      cmd.Println(cmd.UsageString())
       return nil
     },
   }
 
   rootCmd.Flags().StringVarP(&locale, "locale", "l", "en", "Prints description in the specified locale")
+  rootCmd.Flags().StringVarP(&file, "input", "i", "", "Path to crontab file")
   rootCmd.Flags().BoolVarP(&version, "version", "V", false, "Prints version information")
   rootCmd.Flags().BoolVarP(&dayOfWeek, "dow-starts-at-one", "d", false, "Is day of the week starts at 1 (Monday-Sunday: 1-7)")
   rootCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Prints description in verbose format")
