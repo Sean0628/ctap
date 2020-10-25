@@ -13,7 +13,8 @@ var (
   validCronExpression = regexp.MustCompile(`^[wWlL /?,*#\-0-9]*$`)
 
   locale = "en"
-  file = ""
+  inputFile = ""
+  outputFile = ""
   version = false
   dayOfWeek = false
   verbose = false

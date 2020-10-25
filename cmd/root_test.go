@@ -67,7 +67,7 @@ func TestRootCmd_StringOptions(t *testing.T) {
 
   stringArgs := [2][2]string{
     {locale, "en"},
-    {file, ""},
+    {inputFile, ""},
   }
 
   if !matchString(stringArgs) {
@@ -147,7 +147,7 @@ func TestRootCmd_Input(t *testing.T) {
     t.Error(result.Error)
   }
 
-  if file != fileName {
+  if inputFile != fileName {
     t.Error("Expected to be true")
   }
 }
@@ -164,7 +164,7 @@ func TestRootCmd_InputLong(t *testing.T) {
     t.Error(result.Error)
   }
 
-  if file != fileName {
+  if inputFile != fileName {
     t.Error("Expected to be true")
   }
 }
