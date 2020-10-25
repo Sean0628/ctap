@@ -1,9 +1,16 @@
 package main
 
 import (
-	"github.com/Sean0628/ctap/cmd"
+  "os"
+  "fmt"
+
+  command "github.com/Sean0628/ctap/cmd"
 )
 
 func main() {
-  cmd.Execute()
+  cmd := command.New()
+  if err := cmd.Execute(); err != nil {
+    fmt.Fprintln(os.Stderr, err)
+    os.Exit(1)
+  }
 }

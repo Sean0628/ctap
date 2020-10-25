@@ -26,6 +26,6 @@ func RunCmd(c *cobra.Command, input string) resulter {
 func AssertResult(t *testing.T, expectedValue interface{}, actualValue interface{}) {
   t.Helper()
   if expectedValue != actualValue {
-    t.Error("Expected <", expectedValue, "> but got <", actualValue, ">", fmt.Sprintf("%T", actualValue))
+    t.Error("\nExpected: ", expectedValue, "\n     Got: ", actualValue, fmt.Sprintf("\n    Type:  %T", actualValue))
   }
 }
