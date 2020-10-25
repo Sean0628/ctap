@@ -17,7 +17,13 @@ type resulter struct {
 func RunCmd(c *cobra.Command, input string) resulter {
   buf := new(bytes.Buffer)
   c.SetOutput(buf)
-  c.SetArgs(strings.Split(input, "@"))
+
+  splitFn := func(c rune) bool {
+    return c == '@'
+  }
+  args := strings.FieldsFunc(input, splitFn)
+
+  c.SetArgs(args)
   err := c.Execute()
   output := buf.String()
   return resulter{err, output, c}

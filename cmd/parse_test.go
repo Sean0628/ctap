@@ -6,15 +6,9 @@ import (
   "testing"
 
   "github.com/Sean0628/ctap/test"
-  "github.com/spf13/cobra"
 )
 
 const cronExpression = "0 05 * * 1-5"
-
-
-func getRootCommand() *cobra.Command {
-  return New()
-}
 
 func TestGetParsedExpressionDisplay(t *testing.T) {
   cmd := getRootCommand()
