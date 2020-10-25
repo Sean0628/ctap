@@ -1,6 +1,7 @@
 package cmd
 
 import (
+  "fmt"
   "strings"
   "testing"
 
@@ -130,6 +131,40 @@ func TestRootCmd_LocaleLong(t *testing.T) {
   }
 
   if locale != "ja" {
+    t.Error("Expected to be true")
+  }
+}
+
+func TestRootCmd_Input(t *testing.T) {
+  fileName := test.WriteTmpCrontabFile("")
+  defer test.RemoveTmpCrontabFile(fileName)
+
+  cmd := getRootCommand()
+  opts := fmt.Sprintf("-i@%s", fileName)
+
+  result := test.RunCmd(cmd, opts)
+  if result.Error != nil {
+    t.Error(result.Error)
+  }
+
+  if file != fileName {
+    t.Error("Expected to be true")
+  }
+}
+
+func TestRootCmd_InputLong(t *testing.T) {
+  fileName := test.WriteTmpCrontabFile("")
+  defer test.RemoveTmpCrontabFile(fileName)
+
+  cmd := getRootCommand()
+  opts := fmt.Sprintf("--input@%s", fileName)
+
+  result := test.RunCmd(cmd, opts)
+  if result.Error != nil {
+    t.Error(result.Error)
+  }
+
+  if file != fileName {
     t.Error("Expected to be true")
   }
 }
