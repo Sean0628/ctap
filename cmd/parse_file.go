@@ -23,27 +23,29 @@ func GetParsedExpressionFromFileDisplay(args []string) string {
     return fmt.Sprintln(err.Error())
   }
 
-  if len(filePath) > 0 {
-    f, err := os.OpenFile(filePath, os.O_RDONLY, os.ModePerm)
-    if err != nil {
-      fmt.Printf("failed to open file: %s", err)
-    }
-
-    if err := stream(exprDesc, loc, bufio.NewReader(f)); err != nil {
-      fmt.Printf("error: %s", err)
-    }
-
-    return ""
+  f, err := os.OpenFile(filePath, os.O_RDONLY, os.ModePerm)
+  if err != nil {
+    return fmt.Sprintf("ctap: failed to %s.", err)
   }
 
-  return ""
+  expression, err := stream(exprDesc, loc, bufio.NewReader(f))
+  if err != nil {
+    return fmt.Sprintf("ctap: unexpected error occured (%s).", err)
+  }
+  if len(expression) == 0 {
+    return fmt.Sprintln("ctap: noting to be printed out. possibly input file does not have any contents.")
+  }
+
+  return expression
 }
 
-func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, reader *bufio.Reader) error {
+func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, reader *bufio.Reader) (expression string, err error) {
+  var lines []string
+
   for {
     line, _, err := reader.ReadLine()
     if err != nil && err == io.EOF {
-      return nil
+      return strings.Join(lines[:], ""), nil
     }
 
     expr, remaining := normalize(string(line))
@@ -54,15 +56,14 @@ func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, rea
 
     desc, err := exprDesc.ToDescription(expr, localeType)
     if err != nil {
-      fmt.Printf("error: %s\n", err)
-      continue
+      return expression, err
     }
 
     if len(remaining) > 0 {
-      fmt.Printf("%s: %s | %s\n", expr, desc, remaining)
+      lines = append(lines, fmt.Sprintf("%s: %s | %s\n", expr, desc, remaining))
       continue
     }
-    fmt.Printf("%s: %s\n", expr, desc)
+    lines = append(lines, fmt.Sprintf("%s: %s\n", expr, desc))
   }
 }
 
