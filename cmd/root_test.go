@@ -64,8 +64,9 @@ func TestRootCmd_StringOptions(t *testing.T) {
     t.Error(result.Error)
   }
 
-  stringArgs := [1][2]string{
+  stringArgs := [2][2]string{
     {locale, "en"},
+    {file, ""},
   }
 
   if !matchString(stringArgs) {
@@ -73,7 +74,7 @@ func TestRootCmd_StringOptions(t *testing.T) {
   }
 }
 
-func matchString(arr [1][2]string) bool {
+func matchString(arr [2][2]string) bool {
   for _, setOfVal := range arr {
     if setOfVal[0] != setOfVal[1] {
       return false
