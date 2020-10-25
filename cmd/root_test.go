@@ -26,6 +26,89 @@ func TestRootCmd(t *testing.T) {
   }
 }
 
+func TestRootCmd_BoolOptions(t *testing.T) {
+  cmd := getRootCommand()
+  result := test.RunCmd(cmd, "")
+
+  if result.Error != nil {
+    t.Error(result.Error)
+  }
+
+  boolArgs := [4][2]bool{
+    {version,   false},
+    {dayOfWeek, false},
+    {version,   false},
+    {format24,  false},
+  }
+
+  if !matchBool(boolArgs) {
+    t.Error("Expected options should have been initialized defalut values.")
+  }
+}
+
+func matchBool(arr [4][2]bool) bool {
+  for _, setOfVal := range arr {
+    if setOfVal[0] != setOfVal[1] {
+      return false
+    }
+  }
+
+  return true
+}
+
+func TestRootCmd_StringOptions(t *testing.T) {
+  cmd := getRootCommand()
+  result := test.RunCmd(cmd, "")
+
+  if result.Error != nil {
+    t.Error(result.Error)
+  }
+
+  stringArgs := [1][2]string{
+    {locale, "en"},
+  }
+
+  if !matchString(stringArgs) {
+    t.Error("Expected options should have been initialized defalut values.")
+  }
+}
+
+func matchString(arr [1][2]string) bool {
+  for _, setOfVal := range arr {
+    if setOfVal[0] != setOfVal[1] {
+      return false
+    }
+  }
+
+  return true
+}
+
+func TestRootCmd_Help(t *testing.T) {
+  cmd := getRootCommand()
+  result := test.RunCmd(cmd, "-h")
+
+  if result.Error != nil {
+    t.Error(result.Error)
+  }
+
+  if !strings.Contains(result.Output, "ctap is a CLI crontab parser written in Go.") {
+    t.Error("Expected help message to be printed out.")
+  }
+}
+
+func TestRootCmd_HelpLong(t *testing.T) {
+  cmd := getRootCommand()
+  result := test.RunCmd(cmd, "--help")
+
+  if result.Error != nil {
+    t.Error(result.Error)
+  }
+
+  if !strings.Contains(result.Output, "ctap is a CLI crontab parser written in Go.") {
+    t.Error("Expected help message to be printed out.")
+  }
+}
+
 func TestRootCmd_Locale(t *testing.T) {
   cmd := getRootCommand()
   result := test.RunCmd(cmd, "-l@ja")
