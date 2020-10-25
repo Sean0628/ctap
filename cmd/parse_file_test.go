@@ -85,7 +85,6 @@ func TestGetParsedExpressionFromFileDisplay_emptyFile(t *testing.T) {
   test.AssertResult(t, expectedOutput, strings.Trim(result.Output, "\n "))
 }
 
-// TODO
 func TestGetParsedExpressionFromFileDisplay_Locale(t *testing.T) {
   fileName := test.WriteTmpCrontabFile(crontabContent)
   defer test.RemoveTmpCrontabFile(fileName)
