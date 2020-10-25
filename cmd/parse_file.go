@@ -19,6 +19,10 @@ func GetParsedExpressionFromFileDisplay(args []string) string {
   }
 
   exprDesc, err := GetExprDescriptor(loc)
+  if err != nil {
+    return fmt.Sprintln(err.Error())
+  }
+
   if len(filePath) > 0 {
     f, err := os.OpenFile(filePath, os.O_RDONLY, os.ModePerm)
     if err != nil {
@@ -64,7 +68,7 @@ func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, rea
 
 
 func normalize(line string) (expr string, remainder string) {
-  if strings.HasPrefix(line, "#") {
+  if strings.HasPrefix(line, commentOutPrefix) {
     return "", line
   }
 
