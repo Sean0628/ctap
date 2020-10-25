@@ -1,6 +1,7 @@
 package cmd
 
 import (
+  "fmt"
   "strings"
   "testing"
 
@@ -64,8 +65,9 @@ func TestRootCmd_StringOptions(t *testing.T) {
     t.Error(result.Error)
   }
 
-  stringArgs := [1][2]string{
+  stringArgs := [2][2]string{
     {locale, "en"},
+    {file, ""},
   }
 
   if !matchString(stringArgs) {
@@ -73,7 +75,7 @@ func TestRootCmd_StringOptions(t *testing.T) {
   }
 }
 
-func matchString(arr [1][2]string) bool {
+func matchString(arr [2][2]string) bool {
   for _, setOfVal := range arr {
     if setOfVal[0] != setOfVal[1] {
       return false
@@ -129,6 +131,40 @@ func TestRootCmd_LocaleLong(t *testing.T) {
   }
 
   if locale != "ja" {
+    t.Error("Expected to be true")
+  }
+}
+
+func TestRootCmd_Input(t *testing.T) {
+  fileName := test.WriteTmpCrontabFile("")
+  defer test.RemoveTmpCrontabFile(fileName)
+
+  cmd := getRootCommand()
+  opts := fmt.Sprintf("-i@%s", fileName)
+
+  result := test.RunCmd(cmd, opts)
+  if result.Error != nil {
+    t.Error(result.Error)
+  }
+
+  if file != fileName {
+    t.Error("Expected to be true")
+  }
+}
+
+func TestRootCmd_InputLong(t *testing.T) {
+  fileName := test.WriteTmpCrontabFile("")
+  defer test.RemoveTmpCrontabFile(fileName)
+
+  cmd := getRootCommand()
+  opts := fmt.Sprintf("--input@%s", fileName)
+
+  result := test.RunCmd(cmd, opts)
+  if result.Error != nil {
+    t.Error(result.Error)
+  }
+
+  if file != fileName {
     t.Error("Expected to be true")
   }
 }

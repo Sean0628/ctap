@@ -20,7 +20,7 @@ func TestGetParsedExpressionDisplay(t *testing.T) {
   test.AssertResult(t, expectedOutput, strings.Trim(result.Output, "\n "))
 }
 
-func TestGetParsedExpressionDisplayInSpecifiedLocale(t *testing.T) {
+func TestGetParsedExpressionDisplay_Locale(t *testing.T) {
   cmd := getRootCommand()
   result := test.RunCmd(cmd, fmt.Sprintf("-l@ja@%s", cronExpression))
   if result.Error != nil {
@@ -30,7 +30,7 @@ func TestGetParsedExpressionDisplayInSpecifiedLocale(t *testing.T) {
   test.AssertResult(t, expectedOutput, strings.Trim(result.Output, "\n "))
 }
 
-func TestGetParsedExpressionDisplayInSpecifiedLocaleLong(t *testing.T) {
+func TestGetParsedExpressionDisplay_LocaleLong(t *testing.T) {
   cmd := getRootCommand()
   result := test.RunCmd(cmd, fmt.Sprintf("--locale@ja@%s", cronExpression))
   if result.Error != nil {
@@ -40,7 +40,7 @@ func TestGetParsedExpressionDisplayInSpecifiedLocaleLong(t *testing.T) {
   test.AssertResult(t, expectedOutput, strings.Trim(result.Output, "\n "))
 }
 
-func TestGetParsedExpressionDisplayIn24TimeFormat(t *testing.T) {
+func TestGetParsedExpressionDisplay_24hrsFormat(t *testing.T) {
   cmd := getRootCommand()
   result := test.RunCmd(cmd, fmt.Sprintf("--24-hour@%s", cronExpression))
   if result.Error != nil {
@@ -50,7 +50,7 @@ func TestGetParsedExpressionDisplayIn24TimeFormat(t *testing.T) {
   test.AssertResult(t, expectedOutput, strings.Trim(result.Output, "\n "))
 }
 
-func TestGetParsedExpressionDisplayStartingAt1(t *testing.T) {
+func TestGetParsedExpressionDisplay_DowStartsAtOne(t *testing.T) {
   cmd := getRootCommand()
   result := test.RunCmd(cmd, fmt.Sprintf("-d@%s", cronExpression))
   if result.Error != nil {
@@ -60,7 +60,7 @@ func TestGetParsedExpressionDisplayStartingAt1(t *testing.T) {
   test.AssertResult(t, expectedOutput, strings.Trim(result.Output, "\n "))
 }
 
-func TestGetParsedExpressionDisplayStartingAt1Long(t *testing.T) {
+func TestGetParsedExpressionDisplay_DowStartsAtOneLong(t *testing.T) {
   cmd := getRootCommand()
   result := test.RunCmd(cmd, fmt.Sprintf("--dow-starts-at-one@%s", cronExpression))
   if result.Error != nil {

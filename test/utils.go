@@ -3,10 +3,15 @@ package test
 import (
   "bytes"
   "fmt"
+  "io/ioutil"
+  "os"
   "strings"
   "testing"
+
   "github.com/spf13/cobra"
 )
+
+const tmpFileName = "crontab.sample"
 
 type resulter struct {
   Error error
@@ -34,4 +39,18 @@ func AssertResult(t *testing.T, expectedValue interface{}, actualValue interface
   if expectedValue != actualValue {
     t.Error("\nExpected: ", expectedValue, "\n     Got: ", actualValue, fmt.Sprintf("\n    Type:  %T", actualValue))
   }
+}
+
+func WriteTmpCrontabFile(content string) string {
+  tmpFile, _ := ioutil.TempFile("", tmpFileName)
+  defer func() {
+    _ = tmpFile.Close()
+  }()
+
+  _, _ = tmpFile.Write([]byte(content))
+  return tmpFile.Name()
+}
+
+func RemoveTmpCrontabFile(name string) {
+  _ = os.Remove(name)
 }
