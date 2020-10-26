@@ -4,6 +4,8 @@ import (
   "bufio"
   "fmt"
   "io"
+  "io/ioutil"
+  "path/filepath"
   "os"
   "strings"
 
@@ -11,7 +13,8 @@ import (
 )
 
 func GetParsedExpressionFromFileDisplay(args []string) string {
-  filePath := strings.TrimSpace(file)
+  filePath := strings.TrimSpace(inputFile)
+  outputFilePath := strings.TrimSpace(outputFile)
 
   loc, err := GetParseLocale()
   if err != nil {
@@ -25,21 +28,33 @@ func GetParsedExpressionFromFileDisplay(args []string) string {
 
   f, err := os.OpenFile(filePath, os.O_RDONLY, os.ModePerm)
   if err != nil {
-    return fmt.Sprintf("ctap: failed to %s.", err)
+    return fmt.Sprintf("ctap: failed to %s.\n", err)
   }
 
-  expression, err := stream(exprDesc, loc, bufio.NewReader(f))
+  results, err := stream(exprDesc, loc, bufio.NewReader(f))
   if err != nil {
-    return fmt.Sprintf("ctap: unexpected error occured (%s).", err)
+    return fmt.Sprintf("ctap: unexpected error occured (%s).\n", err)
   }
-  if len(expression) == 0 {
+  if len(results) == 0 {
     return fmt.Sprintln("ctap: noting to be printed out. possibly input file does not have any contents.")
   }
 
-  return expression
+  if len(outputFilePath) > 0 {
+    message := []byte(results)
+
+    absolutePath, _ := filepath.Abs(outputFilePath)
+    err := ioutil.WriteFile(absolutePath, message, 0644)
+    if err != nil {
+      return fmt.Sprintln(err.Error())
+    }
+
+    return fmt.Sprintf("ctap: the results are printed out to %s.\n", outputFilePath)
+  }
+
+  return results
 }
 
-func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, reader *bufio.Reader) (expression string, err error) {
+func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, reader *bufio.Reader) (results string, err error) {
   var lines []string
 
   for {
@@ -56,7 +71,7 @@ func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, rea
 
     desc, err := exprDesc.ToDescription(expr, localeType)
     if err != nil {
-      return expression, err
+      return results, err
     }
 
     if len(remaining) > 0 {
