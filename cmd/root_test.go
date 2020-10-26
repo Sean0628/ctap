@@ -65,9 +65,10 @@ func TestRootCmd_StringOptions(t *testing.T) {
     t.Error(result.Error)
   }
 
-  stringArgs := [2][2]string{
+  stringArgs := [3][2]string{
     {locale, "en"},
     {inputFile, ""},
+    {outputFile, ""},
   }
 
   if !matchString(stringArgs) {
@@ -75,7 +76,7 @@ func TestRootCmd_StringOptions(t *testing.T) {
   }
 }
 
-func matchString(arr [2][2]string) bool {
+func matchString(arr [3][2]string) bool {
   for _, setOfVal := range arr {
     if setOfVal[0] != setOfVal[1] {
       return false
@@ -165,6 +166,38 @@ func TestRootCmd_InputLong(t *testing.T) {
   }
 
   if inputFile != fileName {
+    t.Error("Expected to be true")
+  }
+}
+
+func TestRootCmd_Output(t *testing.T) {
+  fileName := "tmp/crontab.test.txt"
+
+  cmd := getRootCommand()
+  opts := fmt.Sprintf("-o@%s", fileName)
+
+  result := test.RunCmd(cmd, opts)
+  if result.Error != nil {
+    t.Error(result.Error)
+  }
+
+  if outputFile != fileName {
+    t.Error("Expected to be true")
+  }
+}
+
+func TestRootCmd_OutputLong(t *testing.T) {
+  fileName := "tmp/crontab.test.txt"
+
+  cmd := getRootCommand()
+  opts := fmt.Sprintf("--output@%s", fileName)
+
+  result := test.RunCmd(cmd, opts)
+  if result.Error != nil {
+    t.Error(result.Error)
+  }
+
+  if outputFile != fileName {
     t.Error("Expected to be true")
   }
 }

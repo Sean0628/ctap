@@ -2,6 +2,7 @@ package cmd
 
 import (
   "fmt"
+  "io/ioutil"
   "strings"
   "testing"
 
@@ -134,4 +135,52 @@ func TestGetParsedExpressionFromFileDisplay_DowStartsAtOne(t *testing.T) {
 0 05 * * 1-5: At 05:00 AM, Sunday through Thursday | root /var/www/db-backup.sh`
 
   test.AssertResult(t, expectedOutput, strings.Trim(result.Output, "\n "))
+}
+
+func TestGetParsedExpressionFromFileDisplay_Output(t *testing.T) {
+  inputFileName := test.WriteTmpCrontabFile(crontabContent)
+  defer test.RemoveTmpCrontabFile(inputFileName)
+
+  outputFileName := "../tmp/crontab.test.txt"
+  defer test.RemoveTmpCrontabFile(outputFileName)
+
+  cmd := getRootCommand()
+  result := test.RunCmd(cmd, fmt.Sprintf("-i@%s@-o@%s", inputFileName, outputFileName))
+  if result.Error != nil {
+    t.Error(result.Error)
+  }
+
+  expectedOutput := fmt.Sprintf("ctap: the results are printed out to %s.", outputFileName)
+  test.AssertResult(t, expectedOutput, strings.Trim(result.Output, "\n "))
+
+  expectedOutput = `0 * * * *: Every hour | /usr/bin/wget -O - -q -t 1 http://localhost/cron.php
+5 0 * * *: At 12:05 AM | /var/www/devdaily.com/bin/resetContactForm.sh
+0 05 * * 1-5: At 05:00 AM, Monday through Friday | root /var/www/db-backup.sh`
+
+  data, _ := ioutil.ReadFile(outputFileName)
+  test.AssertResult(t, expectedOutput, strings.Trim(string(data), "\n "))
+}
+
+func TestGetParsedExpressionFromFileDisplay_OutputLong(t *testing.T) {
+  inputFileName := test.WriteTmpCrontabFile(crontabContent)
+  defer test.RemoveTmpCrontabFile(inputFileName)
+
+  outputFileName := "../tmp/crontab.test.txt"
+  defer test.RemoveTmpCrontabFile(outputFileName)
+
+  cmd := getRootCommand()
+  result := test.RunCmd(cmd, fmt.Sprintf("-i@%s@--output@%s", inputFileName, outputFileName))
+  if result.Error != nil {
+    t.Error(result.Error)
+  }
+
+  expectedOutput := fmt.Sprintf("ctap: the results are printed out to %s.", outputFileName)
+  test.AssertResult(t, expectedOutput, strings.Trim(result.Output, "\n "))
+
+  expectedOutput = `0 * * * *: Every hour | /usr/bin/wget -O - -q -t 1 http://localhost/cron.php
+5 0 * * *: At 12:05 AM | /var/www/devdaily.com/bin/resetContactForm.sh
+0 05 * * 1-5: At 05:00 AM, Monday through Friday | root /var/www/db-backup.sh`
+
+  data, _ := ioutil.ReadFile(outputFileName)
+  test.AssertResult(t, expectedOutput, strings.Trim(string(data), "\n "))
 }

@@ -3,6 +3,7 @@ package cmd
 import (
   "fmt"
   "io/ioutil"
+  "path/filepath"
   "strings"
 )
 
@@ -30,7 +31,9 @@ func GetParsedExpressionDisplay(args []string) string {
   if len(outputFilePath) > 0 {
     // TODO: extract this procedure to another function
     message := []byte(results)
-    err := ioutil.WriteFile(outputFilePath, message, 0644)
+
+    absolutePath, _ := filepath.Abs(outputFilePath)
+    err := ioutil.WriteFile(absolutePath, message, 0644)
     if err != nil {
       return fmt.Sprintln(err.Error())
     }
