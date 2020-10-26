@@ -29,7 +29,6 @@ func GetParsedExpressionDisplay(args []string) string {
   results := fmt.Sprintf("%s: %s\n", expr, desc)
 
   if len(outputFilePath) > 0 {
-    // TODO: extract this procedure to another function
     message := []byte(results)
 
     absolutePath, _ := filepath.Abs(outputFilePath)
