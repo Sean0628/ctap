@@ -65,10 +65,11 @@ func TestRootCmd_StringOptions(t *testing.T) {
 		t.Error(result.Error)
 	}
 
-	stringArgs := [3][2]string{
+	stringArgs := [4][2]string{
 		{locale, "en"},
 		{inputFile, ""},
 		{outputFile, ""},
+		{format, ""},
 	}
 
 	if !matchString(stringArgs) {
@@ -76,7 +77,7 @@ func TestRootCmd_StringOptions(t *testing.T) {
 	}
 }
 
-func matchString(arr [3][2]string) bool {
+func matchString(arr [4][2]string) bool {
 	for _, setOfVal := range arr {
 		if setOfVal[0] != setOfVal[1] {
 			return false
@@ -113,25 +114,33 @@ func TestRootCmd_HelpLong(t *testing.T) {
 }
 
 func TestRootCmd_Locale(t *testing.T) {
+	localeType := "ja"
+
 	cmd := getRootCommand()
-	result := test.RunCmd(cmd, "-l@ja")
+	opts := fmt.Sprintf("-l@%s", localeType)
+
+	result := test.RunCmd(cmd, opts)
 	if result.Error != nil {
 		t.Error(result.Error)
 	}
 
-	if locale != "ja" {
+	if locale != localeType {
 		t.Error("Expected to be true")
 	}
 }
 
 func TestRootCmd_LocaleLong(t *testing.T) {
+	localeType := "ja"
+
 	cmd := getRootCommand()
-	result := test.RunCmd(cmd, "--locale@ja")
+	opts := fmt.Sprintf("--locale@%s", localeType)
+
+	result := test.RunCmd(cmd, opts)
 	if result.Error != nil {
 		t.Error(result.Error)
 	}
 
-	if locale != "ja" {
+	if locale != localeType {
 		t.Error("Expected to be true")
 	}
 }
@@ -198,6 +207,38 @@ func TestRootCmd_OutputLong(t *testing.T) {
 	}
 
 	if outputFile != fileName {
+		t.Error("Expected to be true")
+	}
+}
+
+func TestRootCmd_Format(t *testing.T) {
+	formatType := "csv"
+
+	cmd := getRootCommand()
+	opts := fmt.Sprintf("-f@%s", formatType)
+
+	result := test.RunCmd(cmd, opts)
+	if result.Error != nil {
+		t.Error(result.Error)
+	}
+
+	if format != formatType {
+		t.Error("Expected to be true")
+	}
+}
+
+func TestRootCmd_FormatLong(t *testing.T) {
+	formatType := "csv"
+
+	cmd := getRootCommand()
+	opts := fmt.Sprintf("--format@%s", formatType)
+
+	result := test.RunCmd(cmd, opts)
+	if result.Error != nil {
+		t.Error(result.Error)
+	}
+
+	if format != formatType {
 		t.Error("Expected to be true")
 	}
 }

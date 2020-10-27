@@ -15,6 +15,7 @@ import (
 func GetParsedExpressionFromFileDisplay(args []string) string {
 	filePath := strings.TrimSpace(inputFile)
 	outputFilePath := strings.TrimSpace(outputFile)
+	formatType := strings.TrimSpace(format)
 
 	loc, err := GetParseLocale()
 	if err != nil {
@@ -97,4 +98,14 @@ func normalize(line string) (expr string, remainder string) {
 	}
 
 	return line, ""
+}
+
+func contains(a []string, e string) bool {
+	for _, v := range a {
+		if e == v {
+			return true
+		}
+	}
+
+	return false
 }
