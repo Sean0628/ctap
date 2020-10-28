@@ -184,3 +184,44 @@ func TestGetParsedExpressionFromFileDisplay_OutputLong(t *testing.T) {
 	data, _ := ioutil.ReadFile(outputFileName)
 	test.AssertResult(t, expectedOutput, strings.Trim(string(data), "\n "))
 }
+
+func TestGetParsedExpressionFromFileDisplay_FormatMarkdown(t *testing.T) {
+	formatType := "markdown"
+	fileName := test.WriteTmpCrontabFile(crontabContent)
+	defer test.RemoveTmpCrontabFile(fileName)
+
+	cmd := getRootCommand()
+	opts := fmt.Sprintf("-i@%s@-f@%s", fileName, formatType)
+
+	result := test.RunCmd(cmd, opts)
+	if result.Error != nil {
+		t.Error(result.Error)
+	}
+	expectedOutput := `| Original | Translated | Command |
+|---|---|---|
+| 0 * * * * | Every hour | /usr/bin/wget -O - -q -t 1 http://localhost/cron.php |
+| 5 0 * * * | At 12:05 AM | /var/www/devdaily.com/bin/resetContactForm.sh |
+| 0 05 * * 1-5 | At 05:00 AM, Monday through Friday | root /var/www/db-backup.sh |`
+
+	test.AssertResult(t, expectedOutput, strings.Trim(result.Output, "\n "))
+}
+
+func TestGetParsedExpressionFromFileDisplay_FormatCsv(t *testing.T) {
+	formatType := "csv"
+	fileName := test.WriteTmpCrontabFile(crontabContent)
+	defer test.RemoveTmpCrontabFile(fileName)
+
+	cmd := getRootCommand()
+	opts := fmt.Sprintf("-i@%s@--format@%s", fileName, formatType)
+
+	result := test.RunCmd(cmd, opts)
+	if result.Error != nil {
+		t.Error(result.Error)
+	}
+	expectedOutput := `Original, Translated, Command
+0 * * * *, Every hour, /usr/bin/wget -O - -q -t 1 http://localhost/cron.php
+5 0 * * *, At 12:05 AM, /var/www/devdaily.com/bin/resetContactForm.sh
+0 05 * * 1-5, At 05:00 AM; Monday through Friday, root /var/www/db-backup.sh`
+
+	test.AssertResult(t, expectedOutput, strings.Trim(result.Output, "\n "))
+}

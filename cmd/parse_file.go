@@ -15,7 +15,6 @@ import (
 func GetParsedExpressionFromFileDisplay(args []string) string {
 	filePath := strings.TrimSpace(inputFile)
 	outputFilePath := strings.TrimSpace(outputFile)
-	formatType := strings.TrimSpace(format)
 
 	loc, err := GetParseLocale()
 	if err != nil {
@@ -57,6 +56,16 @@ func GetParsedExpressionFromFileDisplay(args []string) string {
 
 func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, reader *bufio.Reader) (results string, err error) {
 	var lines []string
+	formatType := strings.TrimSpace(format)
+
+	if contains(validFormatTypes, formatType) {
+		switch formatType {
+		case formatCsv:
+			lines = append(lines, fmt.Sprintf("Original, Translated, Command\n"))
+		case formatMd:
+			lines = append(lines, fmt.Sprintf("| Original | Translated | Command |\n|---|---|---|\n"))
+		}
+	}
 
 	for {
 		line, _, err := reader.ReadLine()
@@ -76,10 +85,30 @@ func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, rea
 		}
 
 		if len(remaining) > 0 {
-			lines = append(lines, fmt.Sprintf("%s: %s | %s\n", expr, desc, remaining))
-			continue
+			if contains(validFormatTypes, formatType) {
+				switch formatType {
+				case formatCsv:
+					lines = append(lines, fmt.Sprintf("%s, %s, %s\n", expr, desc, remaining))
+				case formatMd:
+					lines = append(lines, fmt.Sprintf("| %s | %s | %s |\n", expr, desc, remaining))
+				}
+			} else {
+				lines = append(lines, fmt.Sprintf("%s: %s | %s\n", expr, desc, remaining))
+			}
+		} else {
+			if contains(validFormatTypes, formatType) {
+				switch formatType {
+				case formatCsv:
+					lines = append(lines, fmt.Sprintf("%s, %s\n", expr, desc))
+				case formatMd:
+					lines = append(lines, fmt.Sprintf("| %s | %s |\n", expr, desc))
+				}
+			} else {
+				lines = append(lines, fmt.Sprintf("%s: %s\n", expr, desc))
+			}
+
 		}
-		lines = append(lines, fmt.Sprintf("%s: %s\n", expr, desc))
+
 	}
 }
 

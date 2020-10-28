@@ -26,16 +26,7 @@ func GetParsedExpressionDisplay(args []string) string {
 		return fmt.Sprintln(err.Error())
 	}
 
-	if contains(validFormatTypes, formatType) {
-		switch formatType {
-		case formatCsv:
-			results := fmt.Sprintf("%s, %s\n", expr, desc)
-		case formatMd:
-			results := fmt.Sprintf("| %s | %s |\n", expr, desc)
-		}
-	} else {
-		results := fmt.Sprintf("%s: %s\n", expr, desc)
-	}
+	results := fmt.Sprintf("%s: %s\n", expr, desc)
 
 	if len(outputFilePath) > 0 {
 		message := []byte(results)
