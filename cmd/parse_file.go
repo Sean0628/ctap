@@ -6,7 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"path"
+  "path"
 	"path/filepath"
 	"strings"
 
@@ -44,15 +44,15 @@ func GetParsedExpressionFromFileDisplay(args []string) string {
 	if len(outputFilePath) > 0 {
 		message := []byte(results)
 
-		if contains(validFormatTypes, formatType) {
-			ext := path.Ext(outputFilePath)
-			switch formatType {
-			case formatCsv:
-				outputFilePath = outputFilePath[0:len(outputFilePath)-len(ext)] + ".csv"
-			case formatMd:
-				outputFilePath = outputFilePath[0:len(outputFilePath)-len(ext)] + ".md"
-			}
-		}
+    if contains(validFormatTypes, formatType) {
+      ext := path.Ext(outputFilePath)
+      switch formatType {
+      case formatCsv:
+        outputFilePath = outputFilePath[0:len(outputFilePath)-len(ext)] + ".csv"
+      case formatMd:
+        outputFilePath = outputFilePath[0:len(outputFilePath)-len(ext)] + ".md"
+      }
+    }
 
 		absolutePath, _ := filepath.Abs(outputFilePath)
 
@@ -74,9 +74,9 @@ func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, rea
 	if contains(validFormatTypes, formatType) {
 		switch formatType {
 		case formatCsv:
-			lines = append(lines, fmt.Sprintf("Original, Translated, Command\n"))
+			lines = append(lines, "Original, Translated, Command\n")
 		case formatMd:
-			lines = append(lines, fmt.Sprintf("| Original | Translated | Command |\n|---|---|---|\n"))
+			lines = append(lines, "| Original | Translated | Command |\n|---|---|---|\n")
 		}
 	}
 
