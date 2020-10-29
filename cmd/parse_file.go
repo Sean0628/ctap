@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -15,6 +16,7 @@ import (
 func GetParsedExpressionFromFileDisplay(args []string) string {
 	filePath := strings.TrimSpace(inputFile)
 	outputFilePath := strings.TrimSpace(outputFile)
+	formatType := strings.TrimSpace(format)
 
 	loc, err := GetParseLocale()
 	if err != nil {
@@ -42,7 +44,18 @@ func GetParsedExpressionFromFileDisplay(args []string) string {
 	if len(outputFilePath) > 0 {
 		message := []byte(results)
 
+		if contains(validFormatTypes, formatType) {
+			ext := path.Ext(outputFilePath)
+			switch formatType {
+			case formatCsv:
+				outputFilePath = outputFilePath[0:len(outputFilePath)-len(ext)] + ".csv"
+			case formatMd:
+				outputFilePath = outputFilePath[0:len(outputFilePath)-len(ext)] + ".md"
+			}
+		}
+
 		absolutePath, _ := filepath.Abs(outputFilePath)
+
 		err := ioutil.WriteFile(absolutePath, message, 0644)
 		if err != nil {
 			return fmt.Sprintln(err.Error())
@@ -56,6 +69,16 @@ func GetParsedExpressionFromFileDisplay(args []string) string {
 
 func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, reader *bufio.Reader) (results string, err error) {
 	var lines []string
+	formatType := strings.TrimSpace(format)
+
+	if contains(validFormatTypes, formatType) {
+		switch formatType {
+		case formatCsv:
+			lines = append(lines, "Original, Translated, Command\n")
+		case formatMd:
+			lines = append(lines, "| Original | Translated | Command |\n|---|---|---|\n")
+		}
+	}
 
 	for {
 		line, _, err := reader.ReadLine()
@@ -75,10 +98,30 @@ func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, rea
 		}
 
 		if len(remaining) > 0 {
-			lines = append(lines, fmt.Sprintf("%s: %s | %s\n", expr, desc, remaining))
-			continue
+			if contains(validFormatTypes, formatType) {
+				switch formatType {
+				case formatCsv:
+					lines = append(lines, fmt.Sprintf("\"%s\", \"%s\", %s\n", expr, desc, remaining))
+				case formatMd:
+					lines = append(lines, fmt.Sprintf("| %s | %s | %s |\n", expr, desc, remaining))
+				}
+			} else {
+				lines = append(lines, fmt.Sprintf("%s: %s | %s\n", expr, desc, remaining))
+			}
+		} else {
+			if contains(validFormatTypes, formatType) {
+				switch formatType {
+				case formatCsv:
+					lines = append(lines, fmt.Sprintf("\"%s\", \"%s\"\n", expr, desc))
+				case formatMd:
+					lines = append(lines, fmt.Sprintf("| %s | %s |\n", expr, desc))
+				}
+			} else {
+				lines = append(lines, fmt.Sprintf("%s: %s\n", expr, desc))
+			}
+
 		}
-		lines = append(lines, fmt.Sprintf("%s: %s\n", expr, desc))
+
 	}
 }
 
@@ -97,4 +140,14 @@ func normalize(line string) (expr string, remainder string) {
 	}
 
 	return line, ""
+}
+
+func contains(a []string, e string) bool {
+	for _, v := range a {
+		if e == v {
+			return true
+		}
+	}
+
+	return false
 }
