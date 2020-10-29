@@ -219,9 +219,9 @@ func TestGetParsedExpressionFromFileDisplay_FormatCsv(t *testing.T) {
 		t.Error(result.Error)
 	}
 	expectedOutput := `Original, Translated, Command
-0 * * * *, Every hour, /usr/bin/wget -O - -q -t 1 http://localhost/cron.php
-5 0 * * *, At 12:05 AM, /var/www/devdaily.com/bin/resetContactForm.sh
-0 05 * * 1-5, At 05:00 AM; Monday through Friday, root /var/www/db-backup.sh`
+"0 * * * *", "Every hour", /usr/bin/wget -O - -q -t 1 http://localhost/cron.php
+"5 0 * * *", "At 12:05 AM", /var/www/devdaily.com/bin/resetContactForm.sh
+"0 05 * * 1-5", "At 05:00 AM, Monday through Friday", root /var/www/db-backup.sh`
 
 	test.AssertResult(t, expectedOutput, strings.Trim(result.Output, "\n "))
 }

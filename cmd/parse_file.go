@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -15,6 +16,7 @@ import (
 func GetParsedExpressionFromFileDisplay(args []string) string {
 	filePath := strings.TrimSpace(inputFile)
 	outputFilePath := strings.TrimSpace(outputFile)
+	formatType := strings.TrimSpace(format)
 
 	loc, err := GetParseLocale()
 	if err != nil {
@@ -42,7 +44,18 @@ func GetParsedExpressionFromFileDisplay(args []string) string {
 	if len(outputFilePath) > 0 {
 		message := []byte(results)
 
+		if contains(validFormatTypes, formatType) {
+			ext := path.Ext(outputFilePath)
+			switch formatType {
+			case formatCsv:
+				outputFilePath = outputFilePath[0:len(outputFilePath)-len(ext)] + ".csv"
+			case formatMd:
+				outputFilePath = outputFilePath[0:len(outputFilePath)-len(ext)] + ".md"
+			}
+		}
+
 		absolutePath, _ := filepath.Abs(outputFilePath)
+
 		err := ioutil.WriteFile(absolutePath, message, 0644)
 		if err != nil {
 			return fmt.Sprintln(err.Error())
@@ -88,7 +101,7 @@ func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, rea
 			if contains(validFormatTypes, formatType) {
 				switch formatType {
 				case formatCsv:
-					lines = append(lines, fmt.Sprintf("%s, %s, %s\n", expr, desc, remaining))
+					lines = append(lines, fmt.Sprintf("\"%s\", \"%s\", %s\n", expr, desc, remaining))
 				case formatMd:
 					lines = append(lines, fmt.Sprintf("| %s | %s | %s |\n", expr, desc, remaining))
 				}
@@ -99,7 +112,7 @@ func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, rea
 			if contains(validFormatTypes, formatType) {
 				switch formatType {
 				case formatCsv:
-					lines = append(lines, fmt.Sprintf("%s, %s\n", expr, desc))
+					lines = append(lines, fmt.Sprintf("\"%s\", \"%s\"\n", expr, desc))
 				case formatMd:
 					lines = append(lines, fmt.Sprintf("| %s | %s |\n", expr, desc))
 				}
