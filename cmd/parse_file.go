@@ -6,7 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-  "path"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -44,15 +44,15 @@ func GetParsedExpressionFromFileDisplay(args []string) string {
 	if len(outputFilePath) > 0 {
 		message := []byte(results)
 
-    if contains(validFormatTypes, formatType) {
-      ext := path.Ext(outputFilePath)
-      switch formatType {
-      case formatCsv:
-        outputFilePath = outputFilePath[0:len(outputFilePath)-len(ext)] + ".csv"
-      case formatMd:
-        outputFilePath = outputFilePath[0:len(outputFilePath)-len(ext)] + ".md"
-      }
-    }
+		if contains(validFormatTypes, formatType) {
+			ext := path.Ext(outputFilePath)
+			switch formatType {
+			case formatCsv:
+				outputFilePath = outputFilePath[0:len(outputFilePath)-len(ext)] + ".csv"
+			case formatMd:
+				outputFilePath = outputFilePath[0:len(outputFilePath)-len(ext)] + ".md"
+			}
+		}
 
 		absolutePath, _ := filepath.Abs(outputFilePath)
 
