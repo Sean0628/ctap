@@ -6,7 +6,7 @@
 `ctap` is a CLI **c**ron**ta**b **p**arser written in Go.
 
 This allows you to convert cron expression into human readable description, and output into the specified format(csv/markdown).
-The command is based on top of [hcron](https://github.com/lnquy/cron#hcron) created by [Quy Le](https://github.com/lnquy).
+The command is based on [hcron](https://github.com/lnquy/cron#hcron) created by [Quy Le](https://github.com/lnquy).
 
 ## Usage
 ```sh
