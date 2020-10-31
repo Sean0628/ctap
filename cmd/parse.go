@@ -9,7 +9,7 @@ import (
 
 func GetParsedExpressionDisplay(args []string) string {
 	expr := args[0]
-	outputFilePath := strings.TrimSpace(outputFile)
+	outputFilePath := strings.TrimSpace(fOutputFile)
 
 	loc, err := GetParseLocale()
 	if err != nil {

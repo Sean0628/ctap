@@ -10,13 +10,14 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/Sean0628/ctap/utils"
 	"github.com/lnquy/cron"
 )
 
 func GetParsedExpressionFromFileDisplay(args []string) string {
-	filePath := strings.TrimSpace(inputFile)
-	outputFilePath := strings.TrimSpace(outputFile)
-	formatType := strings.TrimSpace(format)
+	filePath := strings.TrimSpace(fInputFile)
+	outputFilePath := strings.TrimSpace(fOutputFile)
+	formatType := strings.TrimSpace(fFormat)
 
 	loc, err := GetParseLocale()
 	if err != nil {
@@ -68,22 +69,33 @@ func GetParsedExpressionFromFileDisplay(args []string) string {
 }
 
 func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, reader *bufio.Reader) (results string, err error) {
-	var lines []string
-	formatType := strings.TrimSpace(format)
-
-	if contains(validFormatTypes, formatType) {
-		switch formatType {
-		case formatCsv:
-			lines = append(lines, "Original, Translated, Command\n")
-		case formatMd:
-			lines = append(lines, "| Original | Translated | Command |\n|---|---|---|\n")
-		}
-	}
+	var lines [][3]string
+	formatType := strings.TrimSpace(fFormat)
 
 	for {
 		line, _, err := reader.ReadLine()
 		if err != nil && err == io.EOF {
-			return strings.Join(lines[:], ""), nil
+
+			var outputLines [][3]string
+			if fSort {
+				outputLines = utils.SortByTime(lines, fFormat24)
+			} else {
+				outputLines = lines
+			}
+
+			var formattedLines []string
+			if contains(validFormatTypes, formatType) {
+				switch formatType {
+				case formatCsv:
+					formattedLines = utils.GetCsvFormattedLines(outputLines)
+				case formatMd:
+					formattedLines = utils.GetMdFormattedLines(outputLines)
+				}
+			} else {
+				formattedLines = utils.GetFomattedLines(outputLines)
+			}
+
+			return strings.Join(formattedLines[:], "\n"), nil
 		}
 
 		expr, remaining := normalize(string(line))
@@ -97,31 +109,7 @@ func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, rea
 			return results, err
 		}
 
-		if len(remaining) > 0 {
-			if contains(validFormatTypes, formatType) {
-				switch formatType {
-				case formatCsv:
-					lines = append(lines, fmt.Sprintf("\"%s\", \"%s\", %s\n", expr, desc, remaining))
-				case formatMd:
-					lines = append(lines, fmt.Sprintf("| %s | %s | %s |\n", expr, desc, remaining))
-				}
-			} else {
-				lines = append(lines, fmt.Sprintf("%s: %s | %s\n", expr, desc, remaining))
-			}
-		} else {
-			if contains(validFormatTypes, formatType) {
-				switch formatType {
-				case formatCsv:
-					lines = append(lines, fmt.Sprintf("\"%s\", \"%s\"\n", expr, desc))
-				case formatMd:
-					lines = append(lines, fmt.Sprintf("| %s | %s |\n", expr, desc))
-				}
-			} else {
-				lines = append(lines, fmt.Sprintf("%s: %s\n", expr, desc))
-			}
-
-		}
-
+		lines = append(lines, [3]string{expr, desc, remaining})
 	}
 }
 
