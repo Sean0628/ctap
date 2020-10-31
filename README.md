@@ -29,6 +29,9 @@ Flags:
   -V, --version             Prints out version information.
 ```
 
+## Demo
+<img src="https://user-images.githubusercontent.com/35167423/97780476-4a5dc300-1bc8-11eb-9708-293095a5b5fd.gif" width="500" height="333"/>
+
 ## Installation
 ### with go get
 ```sh
