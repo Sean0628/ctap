@@ -76,19 +76,26 @@ func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, rea
 		line, _, err := reader.ReadLine()
 		if err != nil && err == io.EOF {
 
-			var results []string
+			var outputLines [][3]string
+			if fSort {
+				outputLines = fileUtils.SortByTime(lines)
+			} else {
+				outputLines = lines
+			}
+
+			var formattedLines []string
 			if contains(validFormatTypes, formatType) {
 				switch formatType {
 				case formatCsv:
-					results = fileUtils.GetCsvFormattedLines(lines)
+					formattedLines = fileUtils.GetCsvFormattedLines(outputLines)
 				case formatMd:
-					results = fileUtils.GetMdFormattedLines(lines)
+					formattedLines = fileUtils.GetMdFormattedLines(outputLines)
 				}
 			} else {
-				results = fileUtils.GetFomattedLines(lines)
+				formattedLines = fileUtils.GetFomattedLines(outputLines)
 			}
 
-			return strings.Join(results[:], "\n"), nil
+			return strings.Join(formattedLines[:], "\n"), nil
 		}
 
 		expr, remaining := normalize(string(line))
