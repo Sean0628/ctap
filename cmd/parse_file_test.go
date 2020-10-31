@@ -226,6 +226,42 @@ func TestGetParsedExpressionFromFileDisplay_FormatCsv(t *testing.T) {
 	test.AssertResult(t, expectedOutput, strings.Trim(result.Output, "\n "))
 }
 
+func TestGetParsedExpressionFromFileDisplay_Sort(t *testing.T) {
+	fileName := test.WriteTmpCrontabFile(crontabContent)
+	defer test.RemoveTmpCrontabFile(fileName)
+
+	cmd := getRootCommand()
+	opts := fmt.Sprintf("-i@%s@-s", fileName)
+
+	result := test.RunCmd(cmd, opts)
+	if result.Error != nil {
+		t.Error(result.Error)
+	}
+	expectedOutput := `0 * * * * | Every hour | /usr/bin/wget -O - -q -t 1 http://localhost/cron.php
+5 0 * * * | At 12:05 AM | /var/www/devdaily.com/bin/resetContactForm.sh
+0 15 * * 1-5 | At 03:00 PM, Monday through Friday | root /var/www/db-backup.sh`
+
+	test.AssertResult(t, expectedOutput, strings.Trim(result.Output, "\n "))
+}
+
+func TestGetParsedExpressionFromFileDisplay_SortLong(t *testing.T) {
+	fileName := test.WriteTmpCrontabFile(crontabContent)
+	defer test.RemoveTmpCrontabFile(fileName)
+
+	cmd := getRootCommand()
+	opts := fmt.Sprintf("-i@%s@--sort", fileName)
+
+	result := test.RunCmd(cmd, opts)
+	if result.Error != nil {
+		t.Error(result.Error)
+	}
+	expectedOutput := `0 * * * * | Every hour | /usr/bin/wget -O - -q -t 1 http://localhost/cron.php
+5 0 * * * | At 12:05 AM | /var/www/devdaily.com/bin/resetContactForm.sh
+0 15 * * 1-5 | At 03:00 PM, Monday through Friday | root /var/www/db-backup.sh`
+
+	test.AssertResult(t, expectedOutput, strings.Trim(result.Output, "\n "))
+}
+
 func TestGetParsedExpressionFromFileDisplay_Sort24(t *testing.T) {
 	fileName := test.WriteTmpCrontabFile(crontabContent)
 	defer test.RemoveTmpCrontabFile(fileName)

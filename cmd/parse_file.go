@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	fileUtils "github.com/Sean0628/ctap/cmd/utils"
+	"github.com/Sean0628/ctap/utils"
 	"github.com/lnquy/cron"
 )
 
@@ -78,7 +78,7 @@ func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, rea
 
 			var outputLines [][3]string
 			if fSort {
-				outputLines = fileUtils.SortByTime(lines)
+				outputLines = utils.SortByTime(lines, fFormat24)
 			} else {
 				outputLines = lines
 			}
@@ -87,12 +87,12 @@ func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, rea
 			if contains(validFormatTypes, formatType) {
 				switch formatType {
 				case formatCsv:
-					formattedLines = fileUtils.GetCsvFormattedLines(outputLines)
+					formattedLines = utils.GetCsvFormattedLines(outputLines)
 				case formatMd:
-					formattedLines = fileUtils.GetMdFormattedLines(outputLines)
+					formattedLines = utils.GetMdFormattedLines(outputLines)
 				}
 			} else {
-				formattedLines = fileUtils.GetFomattedLines(outputLines)
+				formattedLines = utils.GetFomattedLines(outputLines)
 			}
 
 			return strings.Join(formattedLines[:], "\n"), nil

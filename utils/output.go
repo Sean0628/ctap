@@ -1,4 +1,4 @@
-package cmd
+package utils
 
 import (
 	"fmt"
@@ -55,10 +55,14 @@ func (l TimeSlice) Swap(i, j int) {
 	l[i], l[j] = l[j], l[i]
 }
 
-const timeLayout = "15:04"
+func SortByTime(lines [][3]string, format24 bool) (sortedLines [][3]string) {
+	var validTimeExpression = regexp.MustCompile(`([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]|[0-9]) *(AM|PM)?`)
+	var timeLayout = "03:04 PM"
 
-func SortByTime(lines [][3]string) (sortedLines [][3]string) {
-	var validTimeExpression = regexp.MustCompile(`([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]|[0-9])`)
+	if format24 {
+		timeLayout = "15:04"
+	}
+
 	var keys []time.Time
 	lineMap := make(map[string][3]string)
 
