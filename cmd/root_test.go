@@ -35,11 +35,12 @@ func TestRootCmd_BoolOptions(t *testing.T) {
 		t.Error(result.Error)
 	}
 
-	boolArgs := [4][2]bool{
+	boolArgs := [][]bool{
 		{fVersion, false},
 		{fDayOfWeek, false},
 		{fVerbose, false},
 		{fFormat24, false},
+		{fSort, false},
 	}
 
 	if !matchBool(boolArgs) {
@@ -47,7 +48,7 @@ func TestRootCmd_BoolOptions(t *testing.T) {
 	}
 }
 
-func matchBool(arr [4][2]bool) bool {
+func matchBool(arr [][]bool) bool {
 	for _, setOfVal := range arr {
 		if setOfVal[0] != setOfVal[1] {
 			return false
@@ -65,7 +66,7 @@ func TestRootCmd_StringOptions(t *testing.T) {
 		t.Error(result.Error)
 	}
 
-	stringArgs := [4][2]string{
+	stringArgs := [][]string{
 		{fLocale, "en"},
 		{fInputFile, ""},
 		{fOutputFile, ""},
@@ -77,7 +78,7 @@ func TestRootCmd_StringOptions(t *testing.T) {
 	}
 }
 
-func matchString(arr [4][2]string) bool {
+func matchString(arr [][]string) bool {
 	for _, setOfVal := range arr {
 		if setOfVal[0] != setOfVal[1] {
 			return false
@@ -311,6 +312,30 @@ func TestRootCmd_VerboseLong(t *testing.T) {
 	}
 
 	if !fVerbose {
+		t.Error("Expected to be true")
+	}
+}
+
+func TestRootCmd_Sort(t *testing.T) {
+	cmd := getRootCommand()
+	result := test.RunCmd(cmd, "-s")
+	if result.Error != nil {
+		t.Error(result.Error)
+	}
+
+	if !fSort {
+		t.Error("Expected to be true")
+	}
+}
+
+func TestRootCmd_SortLong(t *testing.T) {
+	cmd := getRootCommand()
+	result := test.RunCmd(cmd, "--sort")
+	if result.Error != nil {
+		t.Error(result.Error)
+	}
+
+	if !fSort {
 		t.Error("Expected to be true")
 	}
 }
