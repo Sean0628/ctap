@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	fileUtils "github.com/Sean0628/ctap/cmd/utils"
 	"github.com/lnquy/cron"
 )
 
@@ -68,22 +69,26 @@ func GetParsedExpressionFromFileDisplay(args []string) string {
 }
 
 func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, reader *bufio.Reader) (results string, err error) {
-	var lines []string
+	var lines [][3]string
 	formatType := strings.TrimSpace(fFormat)
-
-	if contains(validFormatTypes, formatType) {
-		switch formatType {
-		case formatCsv:
-			lines = append(lines, "Original, Translated, Command\n")
-		case formatMd:
-			lines = append(lines, "| Original | Translated | Command |\n|---|---|---|\n")
-		}
-	}
 
 	for {
 		line, _, err := reader.ReadLine()
 		if err != nil && err == io.EOF {
-			return strings.Join(lines[:], ""), nil
+
+			var results []string
+			if contains(validFormatTypes, formatType) {
+				switch formatType {
+				case formatCsv:
+					results = fileUtils.GetCsvFormattedLines(lines)
+				case formatMd:
+					results = fileUtils.GetMdFormattedLines(lines)
+				}
+			} else {
+				results = fileUtils.GetFomattedLines(lines)
+			}
+
+			return strings.Join(results[:], "\n"), nil
 		}
 
 		expr, remaining := normalize(string(line))
@@ -97,31 +102,7 @@ func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, rea
 			return results, err
 		}
 
-		if len(remaining) > 0 {
-			if contains(validFormatTypes, formatType) {
-				switch formatType {
-				case formatCsv:
-					lines = append(lines, fmt.Sprintf("\"%s\", \"%s\", %s\n", expr, desc, remaining))
-				case formatMd:
-					lines = append(lines, fmt.Sprintf("| %s | %s | %s |\n", expr, desc, remaining))
-				}
-			} else {
-				lines = append(lines, fmt.Sprintf("%s: %s | %s\n", expr, desc, remaining))
-			}
-		} else {
-			if contains(validFormatTypes, formatType) {
-				switch formatType {
-				case formatCsv:
-					lines = append(lines, fmt.Sprintf("\"%s\", \"%s\"\n", expr, desc))
-				case formatMd:
-					lines = append(lines, fmt.Sprintf("| %s | %s |\n", expr, desc))
-				}
-			} else {
-				lines = append(lines, fmt.Sprintf("%s: %s\n", expr, desc))
-			}
-
-		}
-
+		lines = append(lines, [3]string{expr, desc, remaining})
 	}
 }
 
