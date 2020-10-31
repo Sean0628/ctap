@@ -36,10 +36,10 @@ func TestRootCmd_BoolOptions(t *testing.T) {
 	}
 
 	boolArgs := [4][2]bool{
-		{version, false},
-		{dayOfWeek, false},
-		{version, false},
-		{format24, false},
+		{fVersion, false},
+		{fDayOfWeek, false},
+		{fVerbose, false},
+		{fFormat24, false},
 	}
 
 	if !matchBool(boolArgs) {
@@ -66,10 +66,10 @@ func TestRootCmd_StringOptions(t *testing.T) {
 	}
 
 	stringArgs := [4][2]string{
-		{locale, "en"},
-		{inputFile, ""},
-		{outputFile, ""},
-		{format, ""},
+		{fLocale, "en"},
+		{fInputFile, ""},
+		{fOutputFile, ""},
+		{fFormat, ""},
 	}
 
 	if !matchString(stringArgs) {
@@ -124,7 +124,7 @@ func TestRootCmd_Locale(t *testing.T) {
 		t.Error(result.Error)
 	}
 
-	if locale != localeType {
+	if fLocale != localeType {
 		t.Error("Expected to be true")
 	}
 }
@@ -140,7 +140,7 @@ func TestRootCmd_LocaleLong(t *testing.T) {
 		t.Error(result.Error)
 	}
 
-	if locale != localeType {
+	if fLocale != localeType {
 		t.Error("Expected to be true")
 	}
 }
@@ -157,7 +157,7 @@ func TestRootCmd_Input(t *testing.T) {
 		t.Error(result.Error)
 	}
 
-	if inputFile != fileName {
+	if fInputFile != fileName {
 		t.Error("Expected to be true")
 	}
 }
@@ -174,7 +174,7 @@ func TestRootCmd_InputLong(t *testing.T) {
 		t.Error(result.Error)
 	}
 
-	if inputFile != fileName {
+	if fInputFile != fileName {
 		t.Error("Expected to be true")
 	}
 }
@@ -190,7 +190,7 @@ func TestRootCmd_Output(t *testing.T) {
 		t.Error(result.Error)
 	}
 
-	if outputFile != fileName {
+	if fOutputFile != fileName {
 		t.Error("Expected to be true")
 	}
 }
@@ -206,7 +206,7 @@ func TestRootCmd_OutputLong(t *testing.T) {
 		t.Error(result.Error)
 	}
 
-	if outputFile != fileName {
+	if fOutputFile != fileName {
 		t.Error("Expected to be true")
 	}
 }
@@ -222,7 +222,7 @@ func TestRootCmd_Format(t *testing.T) {
 		t.Error(result.Error)
 	}
 
-	if format != formatType {
+	if fFormat != formatType {
 		t.Error("Expected to be true")
 	}
 }
@@ -238,7 +238,7 @@ func TestRootCmd_FormatLong(t *testing.T) {
 		t.Error(result.Error)
 	}
 
-	if format != formatType {
+	if fFormat != formatType {
 		t.Error("Expected to be true")
 	}
 }
@@ -250,7 +250,7 @@ func TestRootCmd_Version(t *testing.T) {
 		t.Error(result.Error)
 	}
 
-	if !version {
+	if !fVersion {
 		t.Error("Expected to be true")
 	}
 }
@@ -262,7 +262,7 @@ func TestRootCmd_VersionLong(t *testing.T) {
 		t.Error(result.Error)
 	}
 
-	if !version {
+	if !fVersion {
 		t.Error("Expected to be true")
 	}
 }
@@ -274,7 +274,7 @@ func TestRootCmd_DowStartsAtOne(t *testing.T) {
 		t.Error(result.Error)
 	}
 
-	if !dayOfWeek {
+	if !fDayOfWeek {
 		t.Error("Expected to be true")
 	}
 }
@@ -286,7 +286,7 @@ func TestRootCmd_DowStartsAtOneLong(t *testing.T) {
 		t.Error(result.Error)
 	}
 
-	if !dayOfWeek {
+	if !fDayOfWeek {
 		t.Error("Expected to be true")
 	}
 }
@@ -298,7 +298,7 @@ func TestRootCmd_Verbose(t *testing.T) {
 		t.Error(result.Error)
 	}
 
-	if !verbose {
+	if !fVerbose {
 		t.Error("Expected to be true")
 	}
 }
@@ -310,7 +310,7 @@ func TestRootCmd_VerboseLong(t *testing.T) {
 		t.Error(result.Error)
 	}
 
-	if !verbose {
+	if !fVerbose {
 		t.Error("Expected to be true")
 	}
 }
@@ -322,7 +322,7 @@ func TestRootCmd_24hrsFormat(t *testing.T) {
 		t.Error(result.Error)
 	}
 
-	if !format24 {
+	if !fFormat24 {
 		t.Error("Expected to be true")
 	}
 }

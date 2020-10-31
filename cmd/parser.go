@@ -8,9 +8,9 @@ import (
 
 func GetExprDescriptor(loc cron.LocaleType) (exprDesc *cron.ExpressionDescriptor, err error) {
 	exprDesc, err = cron.NewDescriptor(
-		cron.Use24HourTimeFormat(format24),
-		cron.DayOfWeekStartsAtOne(dayOfWeek),
-		cron.Verbose(verbose),
+		cron.Use24HourTimeFormat(fFormat24),
+		cron.DayOfWeekStartsAtOne(fDayOfWeek),
+		cron.Verbose(fVerbose),
 		cron.SetLocales(loc),
 	)
 
@@ -22,7 +22,7 @@ func GetExprDescriptor(loc cron.LocaleType) (exprDesc *cron.ExpressionDescriptor
 }
 
 func GetParseLocale() (loc cron.LocaleType, err error) {
-	loc, err = cron.ParseLocale(locale)
+	loc, err = cron.ParseLocale(fLocale)
 	if err != nil {
 		return loc, fmt.Errorf("ctap: failed to get locale: %w", err)
 	}

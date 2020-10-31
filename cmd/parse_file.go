@@ -14,9 +14,9 @@ import (
 )
 
 func GetParsedExpressionFromFileDisplay(args []string) string {
-	filePath := strings.TrimSpace(inputFile)
-	outputFilePath := strings.TrimSpace(outputFile)
-	formatType := strings.TrimSpace(format)
+	filePath := strings.TrimSpace(fInputFile)
+	outputFilePath := strings.TrimSpace(fOutputFile)
+	formatType := strings.TrimSpace(fFormat)
 
 	loc, err := GetParseLocale()
 	if err != nil {
@@ -69,7 +69,7 @@ func GetParsedExpressionFromFileDisplay(args []string) string {
 
 func stream(exprDesc *cron.ExpressionDescriptor, localeType cron.LocaleType, reader *bufio.Reader) (results string, err error) {
 	var lines []string
-	formatType := strings.TrimSpace(format)
+	formatType := strings.TrimSpace(fFormat)
 
 	if contains(validFormatTypes, formatType) {
 		switch formatType {

@@ -16,12 +16,13 @@ var (
 	formatCsv        = "csv"
 	formatMd         = "markdown"
 
-	locale     = "en"
-	inputFile  = ""
-	outputFile = ""
-	format     = ""
-	version    = false
-	dayOfWeek  = false
-	verbose    = false
-	format24   = false
+	fLocale     = "en"
+	fInputFile  = ""
+	fOutputFile = ""
+	fFormat     = ""
+	fVersion    = false
+	fDayOfWeek  = false
+	fVerbose    = false
+	fSort       = false
+	fFormat24   = false
 )
