@@ -1,5 +1,5 @@
 # ctap
-[![Build](https://github.com/Sean0628/ctap/workflows/Build/badge.svg)](https://github.com/Sean0628/ctap/actions?query=workflow%3ABuild?branch=main)
+[![Build](https://github.com/Sean0628/ctap/workflows/Build/badge.svg?branch=main)](https://github.com/Sean0628/ctap/actions?query=workflow%3ABuild)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Sean0628/ctap/blob/main/LICENSE.md)
 
 ## Overview
