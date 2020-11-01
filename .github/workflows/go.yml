@@ -1,4 +1,4 @@
-name: Go
+name: Build
 
 on:
   push:
@@ -42,3 +42,4 @@ jobs:
         # specified without patch version: we always use the latest patch
         # version.
         version: v1.31
+        args: -E gofmt
