@@ -28,6 +28,10 @@ func New() *cobra.Command {
 			cmd.Println(cmd.UsageString())
 			return nil
 		},
+
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			cmd.SetOut(cmd.OutOrStdout())
+		},
 	}
 
 	rootCmd.Flags().StringVarP(&fLocale, "locale", "l", "en", "Prints out description in the specified locale.")
