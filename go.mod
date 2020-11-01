@@ -1,6 +1,6 @@
 module github.com/Sean0628/ctap
 
-go 1.14
+go 1.15
 
 require (
 	github.com/lnquy/cron v1.0.1
