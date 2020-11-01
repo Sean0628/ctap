@@ -3,4 +3,4 @@ test:
 fmt:
   go fmt ./...
 lint:
-  golangci-lint run
+  golangci-lint run -E gofmt
